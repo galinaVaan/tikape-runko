@@ -10,11 +10,11 @@ public class Alue {
         this.nimi = nimi;
     }
 
-    public Integer getId() {
+    public Integer getAlueid() {
         return alueid;
     }
 
-    public void setId(Integer alueid) {
+    public void setAlueid(Integer alueid) {
         this.alueid = alueid;
     }
 

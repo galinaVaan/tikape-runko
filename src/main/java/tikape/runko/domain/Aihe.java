@@ -2,38 +2,38 @@ package tikape.runko.domain;
 
 public class Aihe {
 
-    private Integer id;
+    private Integer aiheid;
     private String otsikko;
-    private int alue_id;
+    private int alueid;
 
-    public Aihe(Integer id, String otsikko, int alue_id) {
-        this.id = id;
+    public Aihe(Integer aiheid, String otsikko, int alueid) {
+        this.aiheid = aiheid;
         this.otsikko = otsikko;
-        this.alue_id = alue_id;
+        this.alueid = alueid;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getAiheid() {
+        return aiheid;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setAiheid(Integer aiheid) {
+        this.aiheid = aiheid;
     }
 
-    public String getNimi() {
+    public String getOtsikko() {
         return otsikko;
     }
 
-    public void setNimi(String otsikko) {
+    public void setOtsikko(String otsikko) {
         this.otsikko = otsikko;
     }
     
-    public Integer getAlue_Id() {
-        return alue_id;
+    public Integer getAlueid() {
+        return alueid;
     }
 
-    public void setAlue_Id(Integer alue_id) {
-        this.alue_id = alue_id;
+    public void setAlueid(Integer alueid) {
+        this.alueid = alueid;
     }
 
 }
