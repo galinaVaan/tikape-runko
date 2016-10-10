@@ -11,9 +11,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import tikape.runko.domain.Alue;
+import tikape.runko.domain.Aihe;
 
-public class AiheDao implements Dao<Alue, Integer> {
+public class AiheDao implements Dao<Aihe, Integer> {
 
     private Database database;
 
@@ -22,9 +22,9 @@ public class AiheDao implements Dao<Alue, Integer> {
     }
 
     @Override
-    public Alue findOne(Integer key) throws SQLException {
+    public Aihe findOne(Integer key) throws SQLException {
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Alue WHERE id = ?");
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Aihe WHERE aiheid = ?");
         stmt.setObject(1, key);
 
         ResultSet rs = stmt.executeQuery();
@@ -33,10 +33,11 @@ public class AiheDao implements Dao<Alue, Integer> {
             return null;
         }
 
-        Integer id = rs.getInt("id");
+        Integer aiheid = rs.getInt("aiheid");
         String otsikko = rs.getString("otsikko");
+        int alueid = rs.getInt("alueid");
 
-        Alue o = new Alue(id, otsikko);
+        Aihe o = new Aihe(aiheid, otsikko, alueid);
 
         rs.close();
         stmt.close();
@@ -46,18 +47,19 @@ public class AiheDao implements Dao<Alue, Integer> {
     }
 
     @Override
-    public List<Alue> findAll() throws SQLException {
+    public List<Aihe> findAll() throws SQLException {
 
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Alue");
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Aihe");
 
         ResultSet rs = stmt.executeQuery();
-        List<Alue> aiheet = new ArrayList<>();
+        List<Aihe> aiheet = new ArrayList<>();
         while (rs.next()) {
-            Integer id = rs.getInt("id");
+            Integer aiheid = rs.getInt("aiheid");
             String otsikko = rs.getString("otsikko");
+            int alueid = rs.getInt("alueid");
 
-            aiheet.add(new Alue(id, otsikko));
+            aiheet.add(new Aihe(aiheid, otsikko, alueid));
         }
 
         rs.close();
@@ -72,18 +74,19 @@ public class AiheDao implements Dao<Alue, Integer> {
         // ei toteutettu
     }
     
-    public List<Alue> findByAlue(Integer key) throws SQLException {
+    public List<Aihe> findByAihe(Integer key) throws SQLException {
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Alue WHERE alue_id = ?");
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Aihe WHERE alueid = ?");
         stmt.setObject(1, key);
 
         ResultSet rs = stmt.executeQuery();        
-        List<Alue> aiheet = new ArrayList<>();
+        List<Aihe> aiheet = new ArrayList<>();
         while (rs.next()) {
-            Integer id = rs.getInt("id");
+            Integer aiheid = rs.getInt("aiheid");
             String otsikko = rs.getString("otsikko");
+            int alueid = rs.getInt("alueid");
 
-            aiheet.add(new Alue(id, otsikko));
+            aiheet.add(new Aihe(aiheid, otsikko, alueid));
         }
 
         rs.close();
