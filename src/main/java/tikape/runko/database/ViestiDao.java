@@ -6,9 +6,11 @@
 package tikape.runko.database;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import tikape.runko.domain.Viesti;
@@ -24,7 +26,7 @@ public class ViestiDao implements Dao<Viesti, Integer> {
     @Override
     public Viesti findOne(Integer key) throws SQLException {
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Viesti WHERE id = ?");
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Viesti WHERE viestinro = ?");
         stmt.setObject(1, key);
 
         ResultSet rs = stmt.executeQuery();
@@ -33,12 +35,14 @@ public class ViestiDao implements Dao<Viesti, Integer> {
             return null;
         }
 
-        Integer id = rs.getInt("id");
+        Integer viestinro = rs.getInt("viestinro");
         String sisalto = rs.getString("sisalto");
-        String lahettaja = rs.getString("lahettaja");
-        int aihe_id = rs.getInt("aihe_id");
+        int aiheid = rs.getInt("aiheid");
+        
+        Date date = rs.getDate("pvm");
+        Timestamp pvm = new Timestamp(date.getTime());
 
-        Viesti o = new Viesti(id, sisalto, lahettaja, aihe_id);
+        Viesti o = new Viesti(viestinro, aiheid, sisalto, pvm);
 
         rs.close();
         stmt.close();
@@ -56,12 +60,13 @@ public class ViestiDao implements Dao<Viesti, Integer> {
         ResultSet rs = stmt.executeQuery();
         List<Viesti> viestit = new ArrayList<>();
         while (rs.next()) {
-            Integer id = rs.getInt("id");
+            Integer viestinro = rs.getInt("viestinro");
             String sisalto = rs.getString("sisalto");
-            String lahettaja = rs.getString("lahettaja");
-            int aihe_id = rs.getInt("aihe_id");
-
-            viestit.add(new Viesti(id, sisalto, lahettaja, aihe_id));
+            int aiheid = rs.getInt("aiheid");
+            Date date = rs.getDate("pvm");
+            Timestamp pvm = new Timestamp(date.getTime());
+            
+            viestit.add(new Viesti(viestinro, aiheid, sisalto, pvm));
         }
 
         rs.close();
@@ -74,6 +79,13 @@ public class ViestiDao implements Dao<Viesti, Integer> {
     @Override
     public void delete(Integer key) throws SQLException {
         // ei toteutettu
+    }
+    
+    public Viesti create(Viesti v) throws SQLException {
+        Connection connection = database.getConnection();
+        connection.createStatement().executeUpdate("INSERT INTO Viesti (aiheid, sisalto, pvm) VALUES (" + v.getAiheid() + ", '" + v.getSisalto() + "', '" + v.getPvm() + "');");
+        
+        return v;
     }
 
 }

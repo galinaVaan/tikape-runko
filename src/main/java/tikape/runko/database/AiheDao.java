@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import tikape.runko.domain.Aihe;
+import tikape.runko.domain.Alue;
 
 public class AiheDao implements Dao<Aihe, Integer> {
 
@@ -74,7 +75,7 @@ public class AiheDao implements Dao<Aihe, Integer> {
         // ei toteutettu
     }
     
-    public List<Aihe> findByAihe(Integer key) throws SQLException {
+    public List<Aihe> findByAlue(Integer key) throws SQLException {
         Connection connection = database.getConnection();
         PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Aihe WHERE alueid = ?");
         stmt.setObject(1, key);
@@ -95,5 +96,13 @@ public class AiheDao implements Dao<Aihe, Integer> {
 
         return aiheet;
     }
-
+    
+    public Integer countViesti(Aihe a) throws SQLException {
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT COUNT(viestinro) AS viestit FROM Viesti WHERE aiheid = ? GROUP BY viestinro");
+        stmt.setObject(1, a.getAiheid());
+        ResultSet rs = stmt.executeQuery();
+        
+        return rs.getInt("viestit");
+    }
 }

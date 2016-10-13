@@ -1,28 +1,27 @@
 package tikape.runko.domain;
 
-//import java.sql.Date;
+import java.sql.Timestamp;
 
 public class Viesti {
 
-    private Integer id;
+    private Integer viestinro;
     private String sisalto;
-    //private Date pvm;
-    private String lahettaja;
-    private int aihe_id;
+    private Timestamp pvm;
+    private int aiheid;
 
-    public Viesti(Integer id, String sisalto, String lahettaja, int aihe_id) {
-        this.id = id;
+    public Viesti(Integer viestinro, int aiheid, String sisalto, Timestamp pvm) {
+        this.viestinro = viestinro;
+        this.aiheid = aiheid;
         this.sisalto = sisalto;
-        this.lahettaja = lahettaja;
-        this.aihe_id = aihe_id;
+        this.pvm = pvm;
     }
 
     public Integer getId() {
-        return id;
+        return viestinro;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setId(Integer viestinro) {
+        this.viestinro = viestinro;
     }
 
     public String getSisalto() {
@@ -33,28 +32,24 @@ public class Viesti {
         this.sisalto = sisalto;
     }
     
-    public String getLahettaja() {
-        return lahettaja;
+    public Integer getAiheid() {
+        return aiheid;
     }
 
-    public void setLahettaja(String lahettaja) {
-        this.lahettaja = lahettaja;
+    public void setAiheid(Integer aihe_id) {
+        this.aiheid = aihe_id;
     }
     
-    public Integer getAihe_Id() {
-        return aihe_id;
+    public Timestamp getPvm() {
+        return pvm;
     }
 
-    public void setAihe_Id(Integer aihe_id) {
-        this.id = aihe_id;
+    public void setPvm(Timestamp pvm) {
+        this.pvm = pvm;
     }
     
-//    public String getPvm() {
-//        return pvm;
-//    }
-//
-//    public void setPvm(Date pvm) {
-//        this.pvm = pvm;
-//    }
+    public String getPvmstring() {
+        return pvm.toString();
+    }
 
 }

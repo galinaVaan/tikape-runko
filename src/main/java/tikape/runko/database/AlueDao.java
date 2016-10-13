@@ -11,14 +11,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import tikape.runko.domain.Aihe;
 import tikape.runko.domain.Alue;
 
 public class AlueDao implements Dao<Alue, Integer> {
 
     private Database database;
+    private AiheDao aiheDao;
 
     public AlueDao(Database database) {
         this.database = database;
+        this.aiheDao = new AiheDao(database);
     }
 
     @Override
@@ -71,5 +74,21 @@ public class AlueDao implements Dao<Alue, Integer> {
     public void delete(Integer key) throws SQLException {
         // ei toteutettu
     }
-
+    
+    public Alue create(Alue a) throws SQLException {
+        Connection connection = database.getConnection();
+        connection.createStatement().executeUpdate("INSERT INTO Alue (nimi) VALUES ('" + a.getNimi() + "');");
+        
+        return a;
+    }
+    
+    public Integer countViesti(Alue a) throws SQLException {
+        Connection connection = database.getConnection();
+        int count = 0;
+        List<Aihe> aiheet = aiheDao.findByAlue(a.getAlueid());
+        for (Aihe aihe : aiheet) {
+            count += aiheDao.countViesti(aihe);
+        }
+        return count;
+    }
 }
