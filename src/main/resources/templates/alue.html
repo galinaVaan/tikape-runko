@@ -13,13 +13,15 @@
 
 	<ol>
             <li th:each="aihe: ${aiheet}">
-                <span th:text="${aihe.otsikko}">aiheen nimi</span> <a 			th:href="${'/alueet/' + alue.alueid + '/aihe/' + aihe.aiheid}">linkki</a>
+                <span th:text="${aihe.otsikko}">aiheen nimi</span> <a th:href="${'/alueet/' + alue.alueid + '/aihe/' + aihe.aiheid}">linkki</a>
             </li>
         </ol>
 	<p>
 		Lisää uusi aihe:<br/>
-		<form action="${'/alueet/' + alue.alueid}" method="POST">
-			<input type="text" name="nimi"/><br/>
+		<form action="/alueet/:id" method="POST">
+                        <input type="hidden" name="alueid" th:value="${alue.alueid}"/>
+			Otsikko<input type="text" name="otsikko"/><br/>
+                        Viesti<input type="text" name="viesti"/><br/>
 			<input type="submit" value="Uusi aihe"/><br/>
 		</form>
 	</p>
