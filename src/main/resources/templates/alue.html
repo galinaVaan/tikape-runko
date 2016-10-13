@@ -13,7 +13,7 @@
 
 	<ol>
             <li th:each="aihe: ${aiheet}">
-                <span th:text="${aihe.otsikko}">aiheen nimi</span> <a 			th:href="${'/aiheet/' + aihe.aiheid}">linkki</a>
+                <span th:text="${aihe.otsikko}">aiheen nimi</span> <a 			th:href="${'/alueet/' + alue.alueid + '/aihe/' + aihe.aiheid}">linkki</a>
             </li>
         </ol>
     </body>
