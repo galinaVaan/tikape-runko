@@ -10,5 +10,21 @@
         <h1>Tämä aihe on <span th:text="${aihe.otsikko}">aihe</span>!</h1>
 
         <p>Olet saapunut aiheelle <span th:text="${aihe.otsikko}">aihe</span></p>
+
+	<ol>
+            <li th:each="viesti: ${viestit}">
+                <span th:text="${viesti.sisalto}">viestiteksti</span>
+                <!-- <span th:text="${viesti.pvmstring}">viestiaika</span> -->
+            </li>
+	</ol> 
+        
+        <p>
+		Lisää uusi viesti:<br/>
+		<form action="/alueet/:id/aihe/:aiheid" method="POST">
+                    <input type="hidden" name="aiheenid" th:value="${aihe.aiheid}"/>
+                    <input type="text" name="sisalto"/><br/>
+                    <input type="submit" value="Uusi viesti"/><br/>
+		</form>
+	</p>
     </body>
 </html>

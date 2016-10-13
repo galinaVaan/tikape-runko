@@ -16,5 +16,12 @@
                 <span th:text="${aihe.otsikko}">aiheen nimi</span> <a 			th:href="${'/alueet/' + alue.alueid + '/aihe/' + aihe.aiheid}">linkki</a>
             </li>
         </ol>
+	<p>
+		Lisää uusi aihe:<br/>
+		<form action="${'/alueet/' + alue.alueid}" method="POST">
+			<input type="text" name="nimi"/><br/>
+			<input type="submit" value="Uusi aihe"/><br/>
+		</form>
+	</p>
     </body>
 </html>

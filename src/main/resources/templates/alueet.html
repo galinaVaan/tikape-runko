@@ -13,6 +13,7 @@
             <li th:each="alue: ${alueet}">
                 <span th:text="${alue.nimi}">alueen nimi</span> <a th:href="${'/alueet/' + alue.alueid}">linkki</a>
             </li>
+	</ol>
 	<p>
 		Lisää uusi alue:<br/>
 		<form action="/alueet/" method="POST">
@@ -20,6 +21,5 @@
 			<input type="submit" value="Uusi aihe"/><br/>
 		</form>
 	</p>
-        </ol>
     </body>
 </html>
