@@ -11,6 +11,7 @@ import tikape.runko.database.AiheDao;
 import tikape.runko.database.Database;
 import tikape.runko.database.AlueDao;
 import tikape.runko.database.ViestiDao;
+import tikape.runko.domain.Aihe;
 import tikape.runko.domain.Alue;
 import tikape.runko.domain.Viesti;
 
@@ -57,7 +58,7 @@ public class Main {
         get("/alueet/:id/aihe/:aiheid", (req, res) -> {
             HashMap map = new HashMap<>();
             map.put("aihe", aiheDao.findOne(Integer.parseInt(req.params(":aiheid"))));
-            List<Viesti> viestit = viestiDao.findAll();
+            List<Viesti> viestit = viestiDao.findByAihe(Integer.parseInt(req.params(":aiheid")));
             map.put("viestit", viestit);
             return new ModelAndView(map, "aihe");
         }, new ThymeleafTemplateEngine());
@@ -71,6 +72,23 @@ public class Main {
             viestiDao.create(new Viesti(1, aiheenid, sisalto, pvm));
             
             res.redirect("/alueet/:id/aihe/" + aiheenid);
+            return "";
+        });
+        
+        post("/alueet/:id", (req, res) -> {
+            Date date = new Date();
+            
+            int alueid = Integer.parseInt(req.queryParams("alueid"));
+            String nimi = req.queryParams("otsikko").trim();
+            int aiheid = aiheDao.findAll().size() + 1;
+            aiheDao.create(new Aihe(aiheid, nimi, alueid));
+            String sisalto = req.queryParams("viesti");
+            
+            Timestamp pvm = new Timestamp(date.getTime());
+            
+            viestiDao.create(new Viesti(1, aiheid, sisalto, pvm));
+            
+            res.redirect("/alueet/");
             return "";
         });
     }

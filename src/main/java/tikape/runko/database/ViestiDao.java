@@ -87,5 +87,29 @@ public class ViestiDao implements Dao<Viesti, Integer> {
         
         return v;
     }
+    
+    public List<Viesti> findByAihe(Integer key) throws SQLException {
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Viesti WHERE aiheid = ?");
+        stmt.setObject(1, key);
+
+        ResultSet rs = stmt.executeQuery();        
+        List<Viesti> viestit = new ArrayList<>();
+        while (rs.next()) {
+            Integer viestinro = rs.getInt("viestinro");
+            String sisalto = rs.getString("sisalto");
+            int aiheid = rs.getInt("aiheid");
+            Date date = rs.getDate("pvm");
+            Timestamp pvm = new Timestamp(date.getTime());
+            
+            viestit.add(new Viesti(viestinro, aiheid, sisalto, pvm));
+        }
+
+        rs.close();
+        stmt.close();
+        connection.close();
+
+        return viestit;
+    }
 
 }

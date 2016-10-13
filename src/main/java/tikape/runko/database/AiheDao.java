@@ -105,4 +105,11 @@ public class AiheDao implements Dao<Aihe, Integer> {
         
         return rs.getInt("viestit");
     }
+    
+    public Aihe create(Aihe a) throws SQLException {
+        Connection connection = database.getConnection();
+        connection.createStatement().executeUpdate("INSERT INTO Aihe (aiheid, otsikko, alueid) VALUES (" + a.getAiheid() + ", '" + a.getOtsikko() + "', " + a.getAlueid() + ");");
+        
+        return a;
+    }
 }
