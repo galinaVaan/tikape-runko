@@ -1,0 +1,37 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <title>Otsikko</title>
+        <meta charset="utf-8" />
+    </head>
+
+    <body>
+        <h1>Hei <span th:text="${alue.nimi}">opiskelija</span>!</h1>
+
+        <p>Olet saapunut alueen <span th:text="${alue.nimi}">alue</span> kotisivulle.</p>
+
+	<!--<ol>
+            <li th:each="aihe: ${aiheet}">
+                <span th:text="${aihe.otsikko}">aiheen nimi</span> <a th:href="${'/alueet/' + alue.alueid + '/aihe/' + aihe.aiheid}">linkki</a> <span th:text="${aihe.count}">nolla</span>
+            </li>
+        </ol>-->
+        <table>
+            <tr th:each="list: ${aiheet}">
+                <td><a th:href="${'/alueet/' + alue.alueid + '/aihe/' + list.get(0).aiheid}"><span th:text="${list.get(0).otsikko}">jotain</span></a></td>
+                <td><span th:text="${list.get(1)}">luku</span></td>
+                <td><p>   </p></td>
+                <td><span th:text="${list.get(2)}">aika</span></td>
+            </tr>
+        </table>
+	<p>
+		Lisää uusi aihe:<br/>
+		<form action="/alueet/:id" method="POST">
+                        <input type="hidden" name="alueid" th:value="${alue.alueid}"/>
+			Otsikko<input type="text" name="otsikko"/><br/>
+                        Viesti<input type="text" name="viesti"/><br/>
+			<input type="submit" value="Uusi aihe"/><br/>
+		</form>
+	</p>
+    </body>
+</html>
