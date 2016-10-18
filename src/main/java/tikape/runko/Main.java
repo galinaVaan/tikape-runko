@@ -1,6 +1,7 @@
 package tikape.runko;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -26,11 +27,9 @@ public class Main {
         ViestiDao viestiDao = new ViestiDao(database);
 
         get("/", (req, res) -> {
-            HashMap map = new HashMap<>();
-            map.put("viesti", "tervehdys");
-
-            return new ModelAndView(map, "index");
-        }, new ThymeleafTemplateEngine());
+            res.redirect("/alueet/");
+            return "";
+        });
 
         get("/alueet/", (req, res) -> {
             HashMap map = new HashMap<>();
@@ -49,8 +48,18 @@ public class Main {
 
         get("/alueet/:id", (req, res) -> {
             HashMap map = new HashMap<>();
+            List<List> aiheList = new ArrayList<List>();
+            
+            for (Aihe aihe : aiheDao.findByAlue(Integer.parseInt(req.params(":id")))) {
+                List<Object> content = new ArrayList<Object>();
+                content.add(aihe);
+                content.add(aiheDao.countViesti(aihe.getAiheid()));
+                content.add(aiheDao.lastViesti(aihe.getAiheid()));
+                //content.add("temp");
+                aiheList.add(content);
+            }
             map.put("alue", alueDao.findOne(Integer.parseInt(req.params("id"))));
-            map.put("aiheet", aiheDao.findByAlue(Integer.parseInt(req.params(":id"))));
+            map.put("aiheet", aiheList);
 
             return new ModelAndView(map, "alue");
         }, new ThymeleafTemplateEngine());
@@ -81,14 +90,14 @@ public class Main {
             int alueid = Integer.parseInt(req.queryParams("alueid"));
             String nimi = req.queryParams("otsikko").trim();
             int aiheid = aiheDao.findAll().size() + 1;
-            aiheDao.create(new Aihe(aiheid, nimi, alueid));
+            aiheDao.create(new Aihe(aiheid, nimi, alueid, 1));
             String sisalto = req.queryParams("viesti");
             
             Timestamp pvm = new Timestamp(date.getTime());
             
             viestiDao.create(new Viesti(1, aiheid, sisalto, pvm));
             
-            res.redirect("/alueet/");
+            res.redirect("/alueet/" + alueid + "/aihe/" + aiheid);
             return "";
         });
     }

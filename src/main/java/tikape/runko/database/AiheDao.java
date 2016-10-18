@@ -6,6 +6,7 @@
 package tikape.runko.database;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -37,8 +38,9 @@ public class AiheDao implements Dao<Aihe, Integer> {
         Integer aiheid = rs.getInt("aiheid");
         String otsikko = rs.getString("otsikko");
         int alueid = rs.getInt("alueid");
+        int count = countViesti(aiheid);
 
-        Aihe o = new Aihe(aiheid, otsikko, alueid);
+        Aihe o = new Aihe(aiheid, otsikko, alueid, count);
 
         rs.close();
         stmt.close();
@@ -59,8 +61,9 @@ public class AiheDao implements Dao<Aihe, Integer> {
             Integer aiheid = rs.getInt("aiheid");
             String otsikko = rs.getString("otsikko");
             int alueid = rs.getInt("alueid");
+            int count = countViesti(aiheid);
 
-            aiheet.add(new Aihe(aiheid, otsikko, alueid));
+            aiheet.add(new Aihe(aiheid, otsikko, alueid, count));
         }
 
         rs.close();
@@ -86,8 +89,9 @@ public class AiheDao implements Dao<Aihe, Integer> {
             Integer aiheid = rs.getInt("aiheid");
             String otsikko = rs.getString("otsikko");
             int alueid = rs.getInt("alueid");
+            int count = countViesti(aiheid);
 
-            aiheet.add(new Aihe(aiheid, otsikko, alueid));
+            aiheet.add(new Aihe(aiheid, otsikko, alueid, count));
         }
 
         rs.close();
@@ -97,13 +101,50 @@ public class AiheDao implements Dao<Aihe, Integer> {
         return aiheet;
     }
     
-    public Integer countViesti(Aihe a) throws SQLException {
+    public Integer countViesti(int aiheid) throws SQLException {
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT COUNT(viestinro) AS viestit FROM Viesti WHERE aiheid = ? GROUP BY viestinro");
-        stmt.setObject(1, a.getAiheid());
+        PreparedStatement stmt = connection.prepareStatement("SELECT COUNT(viestinro) AS viestit FROM Viesti WHERE aiheid = ? GROUP BY aiheid");
+        stmt.setObject(1, aiheid);
         ResultSet rs = stmt.executeQuery();
         
-        return rs.getInt("viestit");
+        boolean hasOne = rs.next();
+        if (!hasOne) {
+            return 0;
+        }
+        
+        int count = rs.getInt("viestit");
+        
+        rs.close();
+        stmt.close();
+        connection.close();
+        
+        return count;
+    }
+    
+    public String lastViesti(int aiheid) throws SQLException {
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT MAX(pvm) AS viimeisin FROM Viesti WHERE aiheid = ?;");
+        stmt.setObject(1, aiheid);
+        ResultSet rs = stmt.executeQuery();
+        
+        boolean hasOne = rs.next();
+        if (!hasOne) {
+            return "ei viestejä";
+        }
+        
+        Date date = rs.getDate("viimeisin");
+        String dateString;
+        if (date.toString() == "") {
+           dateString = "tyhjä";
+        } else {
+           dateString = date.toString(); 
+        }
+        
+        rs.close();
+        stmt.close();
+        connection.close();
+        
+        return dateString;
     }
     
     public Aihe create(Aihe a) throws SQLException {

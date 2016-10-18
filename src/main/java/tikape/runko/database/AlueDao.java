@@ -87,7 +87,7 @@ public class AlueDao implements Dao<Alue, Integer> {
         int count = 0;
         List<Aihe> aiheet = aiheDao.findByAlue(a.getAlueid());
         for (Aihe aihe : aiheet) {
-            count += aiheDao.countViesti(aihe);
+            count += aiheDao.countViesti(aihe.getAiheid());
         }
         return count;
     }
