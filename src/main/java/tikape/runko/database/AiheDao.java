@@ -10,6 +10,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import tikape.runko.domain.Aihe;
@@ -38,9 +39,8 @@ public class AiheDao implements Dao<Aihe, Integer> {
         Integer aiheid = rs.getInt("aiheid");
         String otsikko = rs.getString("otsikko");
         int alueid = rs.getInt("alueid");
-        int count = countViesti(aiheid);
 
-        Aihe o = new Aihe(aiheid, otsikko, alueid, count);
+        Aihe o = new Aihe(aiheid, otsikko, alueid);
 
         rs.close();
         stmt.close();
@@ -61,9 +61,8 @@ public class AiheDao implements Dao<Aihe, Integer> {
             Integer aiheid = rs.getInt("aiheid");
             String otsikko = rs.getString("otsikko");
             int alueid = rs.getInt("alueid");
-            int count = countViesti(aiheid);
 
-            aiheet.add(new Aihe(aiheid, otsikko, alueid, count));
+            aiheet.add(new Aihe(aiheid, otsikko, alueid));
         }
 
         rs.close();
@@ -80,7 +79,7 @@ public class AiheDao implements Dao<Aihe, Integer> {
     
     public List<Aihe> findByAlue(Integer key) throws SQLException {
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Aihe WHERE alueid = ?");
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Aihe WHERE alueid = ? ORDER BY aiheid DESC LIMIT 10");
         stmt.setObject(1, key);
 
         ResultSet rs = stmt.executeQuery();        
@@ -89,9 +88,8 @@ public class AiheDao implements Dao<Aihe, Integer> {
             Integer aiheid = rs.getInt("aiheid");
             String otsikko = rs.getString("otsikko");
             int alueid = rs.getInt("alueid");
-            int count = countViesti(aiheid);
 
-            aiheet.add(new Aihe(aiheid, otsikko, alueid, count));
+            aiheet.add(new Aihe(aiheid, otsikko, alueid));
         }
 
         rs.close();
@@ -126,18 +124,14 @@ public class AiheDao implements Dao<Aihe, Integer> {
         PreparedStatement stmt = connection.prepareStatement("SELECT MAX(pvm) AS viimeisin FROM Viesti WHERE aiheid = ?;");
         stmt.setObject(1, aiheid);
         ResultSet rs = stmt.executeQuery();
-        
-        boolean hasOne = rs.next();
-        if (!hasOne) {
-            return "ei viestejä";
-        }
-        
-        Date date = rs.getDate("viimeisin");
         String dateString;
-        if (date.toString() == "") {
-           dateString = "tyhjä";
+        
+        if (!lastViestiCheck(aiheid)) {
+            dateString = "Ei viestejä";
         } else {
-           dateString = date.toString(); 
+            Date date = rs.getDate("viimeisin");
+            SimpleDateFormat sdf = new SimpleDateFormat ("yyyy.MM.dd hh:mm:ss");
+            dateString = sdf.format(date);
         }
         
         rs.close();
@@ -147,10 +141,33 @@ public class AiheDao implements Dao<Aihe, Integer> {
         return dateString;
     }
     
+    public boolean lastViestiCheck(int aiheid) throws SQLException {
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Viesti WHERE aiheid = ?;");
+        stmt.setObject(1, aiheid);
+        ResultSet rs = stmt.executeQuery();
+        
+        boolean hasOne = rs.next();
+        
+        rs.close();
+        stmt.close();
+        connection.close();
+        
+        if (!hasOne) {
+            return false;
+        } else return true;
+    }
+    
     public Aihe create(Aihe a) throws SQLException {
         Connection connection = database.getConnection();
-        connection.createStatement().executeUpdate("INSERT INTO Aihe (aiheid, otsikko, alueid) VALUES (" + a.getAiheid() + ", '" + a.getOtsikko() + "', " + a.getAlueid() + ");");
+        PreparedStatement stmt = connection.prepareStatement("INSERT INTO Aihe (aiheid, otsikko, alueid) VALUES (?, ?, ?);");
+        stmt.setObject(1, a.getAiheid());
+        stmt.setObject(2, a.getOtsikko());
+        stmt.setObject(3, a.getAlueid());
+        stmt.execute();
         
+        stmt.close();
+        connection.close();
         return a;
     }
 }

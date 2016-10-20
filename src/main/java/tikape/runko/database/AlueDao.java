@@ -6,9 +6,11 @@
 package tikape.runko.database;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import tikape.runko.domain.Aihe;
@@ -52,7 +54,7 @@ public class AlueDao implements Dao<Alue, Integer> {
     public List<Alue> findAll() throws SQLException {
 
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Alue");
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Alue ORDER BY nimi ASC");
 
         ResultSet rs = stmt.executeQuery();
         List<Alue> alueet = new ArrayList<>();
@@ -77,8 +79,12 @@ public class AlueDao implements Dao<Alue, Integer> {
     
     public Alue create(Alue a) throws SQLException {
         Connection connection = database.getConnection();
-        connection.createStatement().executeUpdate("INSERT INTO Alue (nimi) VALUES ('" + a.getNimi() + "');");
+        PreparedStatement stmt = connection.prepareStatement("INSERT INTO Alue (nimi) VALUES (?);");
+        stmt.setObject(1, a.getNimi());
+        stmt.execute();
         
+        stmt.close();
+        connection.close();
         return a;
     }
     
@@ -90,5 +96,44 @@ public class AlueDao implements Dao<Alue, Integer> {
             count += aiheDao.countViesti(aihe.getAiheid());
         }
         return count;
+    }
+    
+    public String lastViesti(int alueid) throws SQLException {
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT MAX(pvm) AS viimeisin FROM Viesti, Aihe WHERE Viesti.aiheid = Aihe.aiheid AND Aihe.alueid = ?;");
+        stmt.setObject(1, alueid);
+        ResultSet rs = stmt.executeQuery();
+        String dateString;
+        
+        if (!lastViestiCheck(alueid)) {
+            dateString = "Ei viestejä";
+        } else {
+            Date date = rs.getDate("viimeisin");
+            SimpleDateFormat sdf = new SimpleDateFormat ("yyyy.MM.dd hh:mm:ss");
+            dateString = sdf.format(date);
+        }
+        
+        rs.close();
+        stmt.close();
+        connection.close();
+        
+        return dateString;
+    }
+    
+    public boolean lastViestiCheck(int alueid) throws SQLException {
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Viesti, Aihe WHERE Viesti.aiheid = Aihe.aiheid AND Aihe.alueid = ?;");
+        stmt.setObject(1, alueid);
+        ResultSet rs = stmt.executeQuery();
+        
+        boolean hasOne = rs.next();
+        
+        rs.close();
+        stmt.close();
+        connection.close();
+        
+        if (!hasOne) {
+            return false;
+        } else return true;
     }
 }

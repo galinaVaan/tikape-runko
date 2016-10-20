@@ -9,11 +9,25 @@
     <body>
         <h1>Lista alueista!</h1>
 
-        <ol>
+        <!--<ol>
             <li th:each="alue: ${alueet}">
-                <span th:text="${alue.nimi}">alueen nimi</span> <a th:href="${'/alueet/' + alue.alueid}">linkki</a>
+                <a th:href="${'/alueet/' + alue.alueid}"><span th:text="${alue.nimi}">alueen nimi</span></a>
             </li>
-	</ol>
+	</ol>-->
+        
+        <table>
+            <tr>
+                <td>Alue</td>
+                <td>Viestejä</td>
+                <td>Uusin viesti</td>
+            </tr>
+            <tr th:each="list: ${alueet}">
+                <td><a th:href="${'/alueet/' + list.get(0).alueid}"><span th:text="${list.get(0).nimi}">jotain</span></a></td>
+                <td><span th:text="${list.get(1)}">luku</span></td>
+                <td><span th:text="${list.get(2)}">aika</span></td>
+            </tr>
+        </table>
+        
 	<p>
 		Lisää uusi alue:<br/>
 		<form action="/alueet/" method="POST">

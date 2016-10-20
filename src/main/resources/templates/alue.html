@@ -17,10 +17,14 @@
             </li>
         </ol>-->
         <table>
+            <tr>
+                <td>Aihe</td>
+                <td>Viestejä</td>
+                <td>Uusin viesti</td>
+            </tr>
             <tr th:each="list: ${aiheet}">
                 <td><a th:href="${'/alueet/' + alue.alueid + '/aihe/' + list.get(0).aiheid}"><span th:text="${list.get(0).otsikko}">jotain</span></a></td>
                 <td><span th:text="${list.get(1)}">luku</span></td>
-                <td><p>   </p></td>
                 <td><span th:text="${list.get(2)}">aika</span></td>
             </tr>
         </table>
@@ -30,6 +34,7 @@
                         <input type="hidden" name="alueid" th:value="${alue.alueid}"/>
 			Otsikko<input type="text" name="otsikko"/><br/>
                         Viesti<input type="text" name="viesti"/><br/>
+                        Nimimerkki<input type="text" name="lahettaja"/><br/>
 			<input type="submit" value="Uusi aihe"/><br/>
 		</form>
 	</p>

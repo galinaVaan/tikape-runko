@@ -13,16 +13,18 @@
 
 	<ol>
             <li th:each="viesti: ${viestit}">
-                <span th:text="${viesti.sisalto}">viestiteksti</span>
-                <!-- <span th:text="${viesti.pvmstring}">viestiaika</span> -->
+                <span th:text="${viesti.sisalto}">viestiteksti</span> t: <span th:text="${viesti.lahettaja}">lähettäjä</span>
             </li>
-	</ol> 
-        
+	</ol>
+        <a th:href="${'/alueet/' + aihe.alueid + '/aihe/' + aihe.aiheid + '?sivu=' + sivuminus}"><span>Edellinen sivu</span></a>
+        <a th:href="${'/alueet/' + aihe.alueid + '/aihe/' + aihe.aiheid + '?sivu=' + sivuplus}"><span>Seuraava sivu</span></a>
         <p>
 		Lisää uusi viesti:<br/>
 		<form action="/alueet/:id/aihe/:aiheid" method="POST">
                     <input type="hidden" name="aiheenid" th:value="${aihe.aiheid}"/>
-                    <input type="text" name="sisalto"/><br/>
+                    <input type="hidden" name="alueid" th:value="${aihe.alueid}"/>
+                    Viesti<input type="text" name="sisalto"/><br/>
+                    Nimimerkki<input type="text" name="lahettaja"/><br/>
                     <input type="submit" value="Uusi viesti"/><br/>
 		</form>
 	</p>

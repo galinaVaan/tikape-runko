@@ -33,8 +33,19 @@ public class Main {
 
         get("/alueet/", (req, res) -> {
             HashMap map = new HashMap<>();
-            map.put("alueet", alueDao.findAll());
-
+            
+            List<List> alueList = new ArrayList<List>();
+            
+            for (Alue alue : alueDao.findAll()) {
+                List<Object> content = new ArrayList<Object>();
+                content.add(alue);
+                content.add(alueDao.countViesti(alue));
+                content.add(alueDao.lastViesti(alue.getAlueid()));
+                //content.add("temp");
+                alueList.add(content);
+            }
+            
+            map.put("alueet", alueList);
             return new ModelAndView(map, "alueet");
         }, new ThymeleafTemplateEngine());
         
@@ -67,8 +78,20 @@ public class Main {
         get("/alueet/:id/aihe/:aiheid", (req, res) -> {
             HashMap map = new HashMap<>();
             map.put("aihe", aiheDao.findOne(Integer.parseInt(req.params(":aiheid"))));
-            List<Viesti> viestit = viestiDao.findByAihe(Integer.parseInt(req.params(":aiheid")));
+            int sivu = 1;
+            if (req.queryParams("sivu") != null) {
+                sivu = Integer.parseInt(req.queryParams("sivu"));
+            }
+            List<Viesti> viestit = viestiDao.findByAihe(Integer.parseInt(req.params(":aiheid")), sivu);
             map.put("viestit", viestit);
+            map.put("sivunumero", sivu);
+            map.put("sivuplus", sivu + 1);
+            if (sivu > 1) {
+                map.put("sivuminus", sivu - 1);
+            } else {
+               map.put("sivuminus", sivu); 
+            }
+            
             return new ModelAndView(map, "aihe");
         }, new ThymeleafTemplateEngine());
         
@@ -77,10 +100,13 @@ public class Main {
             int aiheenid = Integer.parseInt(req.queryParams("aiheenid"));
             String sisalto = req.queryParams("sisalto").trim();
             Timestamp pvm = new Timestamp(date.getTime());
+            String lahettaja = req.queryParams("lahettaja");
             
-            viestiDao.create(new Viesti(1, aiheenid, sisalto, pvm));
+            viestiDao.create(new Viesti(1, aiheenid, sisalto, pvm, lahettaja));
             
-            res.redirect("/alueet/:id/aihe/" + aiheenid);
+            int alueid = Integer.parseInt(req.queryParams("alueid"));
+            
+            res.redirect("/alueet/" + alueid + "/aihe/" + aiheenid);
             return "";
         });
         
@@ -90,12 +116,13 @@ public class Main {
             int alueid = Integer.parseInt(req.queryParams("alueid"));
             String nimi = req.queryParams("otsikko").trim();
             int aiheid = aiheDao.findAll().size() + 1;
-            aiheDao.create(new Aihe(aiheid, nimi, alueid, 1));
+            aiheDao.create(new Aihe(aiheid, nimi, alueid));
             String sisalto = req.queryParams("viesti");
+            String lahettaja = req.queryParams("lahettaja");
             
             Timestamp pvm = new Timestamp(date.getTime());
             
-            viestiDao.create(new Viesti(1, aiheid, sisalto, pvm));
+            viestiDao.create(new Viesti(1, aiheid, sisalto, pvm, lahettaja));
             
             res.redirect("/alueet/" + alueid + "/aihe/" + aiheid);
             return "";

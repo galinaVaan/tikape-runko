@@ -1,19 +1,22 @@
 package tikape.runko.domain;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 public class Viesti {
 
     private Integer viestinro;
+    private int aiheid;
     private String sisalto;
     private Timestamp pvm;
-    private int aiheid;
+    private String lahettaja;
 
-    public Viesti(Integer viestinro, int aiheid, String sisalto, Timestamp pvm) {
+    public Viesti(Integer viestinro, int aiheid, String sisalto, Timestamp pvm, String lahettaja) {
         this.viestinro = viestinro;
         this.aiheid = aiheid;
         this.sisalto = sisalto;
         this.pvm = pvm;
+        this.lahettaja = lahettaja;
     }
 
     public Integer getId() {
@@ -49,7 +52,22 @@ public class Viesti {
     }
     
     public String getPvmstring() {
-        return pvm.toString();
+        SimpleDateFormat sdf = new SimpleDateFormat ("yyyy.MM.dd hh:mm:ss");
+        String dateString;
+        if (pvm.toString() == "") {
+           dateString = "tyhjä";
+        } else {
+           dateString = sdf.format(pvm);
+        }
+        return dateString;
+    }
+    
+    public String getLahettaja() {
+        return lahettaja;
+    }
+
+    public void setLahettaja(String lahettaja) {
+        this.lahettaja = lahettaja;
     }
 
 }

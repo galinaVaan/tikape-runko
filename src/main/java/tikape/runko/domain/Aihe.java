@@ -5,13 +5,11 @@ public class Aihe {
     private Integer aiheid;
     private String otsikko;
     private int alueid;
-    private int count;
 
-    public Aihe(Integer aiheid, String otsikko, int alueid, int count) {
+    public Aihe(Integer aiheid, String otsikko, int alueid) {
         this.aiheid = aiheid;
         this.otsikko = otsikko;
         this.alueid = alueid;
-        this.count = count;
     }
 
     public Integer getAiheid() {
@@ -37,13 +35,4 @@ public class Aihe {
     public void setAlueid(Integer alueid) {
         this.alueid = alueid;
     }
-    
-    public Integer getCount() {
-        return count;
-    }
-
-    public void setCount(Integer count) {
-        this.count = count;
-    }
-
 }

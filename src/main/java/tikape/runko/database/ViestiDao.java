@@ -41,8 +41,9 @@ public class ViestiDao implements Dao<Viesti, Integer> {
         
         Date date = rs.getDate("pvm");
         Timestamp pvm = new Timestamp(date.getTime());
+        String lahettaja = rs.getString("lahettaja");
 
-        Viesti o = new Viesti(viestinro, aiheid, sisalto, pvm);
+        Viesti o = new Viesti(viestinro, aiheid, sisalto, pvm, lahettaja);
 
         rs.close();
         stmt.close();
@@ -65,8 +66,9 @@ public class ViestiDao implements Dao<Viesti, Integer> {
             int aiheid = rs.getInt("aiheid");
             Date date = rs.getDate("pvm");
             Timestamp pvm = new Timestamp(date.getTime());
+            String lahettaja = rs.getString("lahettaja");
             
-            viestit.add(new Viesti(viestinro, aiheid, sisalto, pvm));
+            viestit.add(new Viesti(viestinro, aiheid, sisalto, pvm, lahettaja));
         }
 
         rs.close();
@@ -83,15 +85,26 @@ public class ViestiDao implements Dao<Viesti, Integer> {
     
     public Viesti create(Viesti v) throws SQLException {
         Connection connection = database.getConnection();
-        connection.createStatement().executeUpdate("INSERT INTO Viesti (aiheid, sisalto, pvm) VALUES (" + v.getAiheid() + ", '" + v.getSisalto() + "', '" + v.getPvm() + "');");
         
+        PreparedStatement stmt = connection.prepareStatement("INSERT INTO Viesti (aiheid, sisalto, pvm, lahettaja) VALUES (?, ?, ?, ?);");
+        stmt.setObject(1, v.getAiheid());
+        stmt.setObject(2, v.getSisalto());
+        stmt.setObject(3, v.getPvm());
+        stmt.setObject(4, v.getLahettaja());
+        
+        stmt.execute();
+        
+        stmt.close();
+        connection.close();
         return v;
     }
     
-    public List<Viesti> findByAihe(Integer key) throws SQLException {
+    public List<Viesti> findByAihe(Integer key, Integer limit) throws SQLException {
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Viesti WHERE aiheid = ?");
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Viesti WHERE aiheid = ? LIMIT ?, ?");
         stmt.setObject(1, key);
+        stmt.setObject(2, (limit * 10) - 10);
+        stmt.setObject(3, limit * 10);
 
         ResultSet rs = stmt.executeQuery();        
         List<Viesti> viestit = new ArrayList<>();
@@ -101,8 +114,9 @@ public class ViestiDao implements Dao<Viesti, Integer> {
             int aiheid = rs.getInt("aiheid");
             Date date = rs.getDate("pvm");
             Timestamp pvm = new Timestamp(date.getTime());
+            String lahettaja = rs.getString("lahettaja");
             
-            viestit.add(new Viesti(viestinro, aiheid, sisalto, pvm));
+            viestit.add(new Viesti(viestinro, aiheid, sisalto, pvm, lahettaja));
         }
 
         rs.close();
