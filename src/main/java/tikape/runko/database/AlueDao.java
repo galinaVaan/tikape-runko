@@ -78,6 +78,9 @@ public class AlueDao implements Dao<Alue, Integer> {
     }
 
     public Alue create(Alue a) throws SQLException {
+        if (a.getNimi().isEmpty()) {
+            return a;
+        }
         Connection connection = database.getConnection();
         PreparedStatement stmt1 = connection.prepareStatement("SELECT nimi FROM Alue WHERE nimi = ?");
         stmt1.setObject(1, a.getNimi());

@@ -161,6 +161,9 @@ public class AiheDao implements Dao<Aihe, Integer> {
     }
 
     public Aihe create(Aihe a) throws SQLException {
+        if (a.getOtsikko().isEmpty()) {
+            a.setOtsikko("Mistä tähänsä eli sotku");
+        }
         Connection connection = database.getConnection();
         PreparedStatement stmt1 = connection.prepareStatement("SELECT otsikko FROM Aihe WHERE otsikko = ?");
         stmt1.setObject(1, a.getOtsikko());
@@ -174,7 +177,7 @@ public class AiheDao implements Dao<Aihe, Integer> {
 
             stmt.close();
         } else {
-            a= findOneByOtsikko(a.getOtsikko());
+            a = findOneByOtsikko(a.getOtsikko());
         }
         stmt1.close();
         connection.close();

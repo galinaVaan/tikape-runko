@@ -38,7 +38,7 @@ public class ViestiDao implements Dao<Viesti, Integer> {
         Integer viestinro = rs.getInt("viestinro");
         String sisalto = rs.getString("sisalto");
         int aiheid = rs.getInt("aiheid");
-        
+
         Date date = rs.getDate("pvm");
         Timestamp pvm = new Timestamp(date.getTime());
         String lahettaja = rs.getString("lahettaja");
@@ -67,7 +67,7 @@ public class ViestiDao implements Dao<Viesti, Integer> {
             Date date = rs.getDate("pvm");
             Timestamp pvm = new Timestamp(date.getTime());
             String lahettaja = rs.getString("lahettaja");
-            
+
             viestit.add(new Viesti(viestinro, aiheid, sisalto, pvm, lahettaja));
         }
 
@@ -82,23 +82,26 @@ public class ViestiDao implements Dao<Viesti, Integer> {
     public void delete(Integer key) throws SQLException {
         // ei toteutettu
     }
-    
+
     public Viesti create(Viesti v) throws SQLException {
+        if (v.getSisalto().isEmpty()) {
+            return v;
+        }
         Connection connection = database.getConnection();
-        
+
         PreparedStatement stmt = connection.prepareStatement("INSERT INTO Viesti (aiheid, sisalto, pvm, lahettaja) VALUES (?, ?, ?, ?);");
         stmt.setObject(1, v.getAiheid());
         stmt.setObject(2, v.getSisalto());
         stmt.setObject(3, v.getPvm());
         stmt.setObject(4, v.getLahettaja());
-        
+
         stmt.execute();
-        
+
         stmt.close();
         connection.close();
         return v;
     }
-    
+
     public List<Viesti> findByAihe(Integer key, Integer limit) throws SQLException {
         Connection connection = database.getConnection();
         PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Viesti WHERE aiheid = ? LIMIT ?, ?");
@@ -106,7 +109,7 @@ public class ViestiDao implements Dao<Viesti, Integer> {
         stmt.setObject(2, (limit * 10) - 10);
         stmt.setObject(3, limit * 10);
 
-        ResultSet rs = stmt.executeQuery();        
+        ResultSet rs = stmt.executeQuery();
         List<Viesti> viestit = new ArrayList<>();
         while (rs.next()) {
             Integer viestinro = rs.getInt("viestinro");
@@ -115,7 +118,7 @@ public class ViestiDao implements Dao<Viesti, Integer> {
             Date date = rs.getDate("pvm");
             Timestamp pvm = new Timestamp(date.getTime());
             String lahettaja = rs.getString("lahettaja");
-            
+
             viestit.add(new Viesti(viestinro, aiheid, sisalto, pvm, lahettaja));
         }
 

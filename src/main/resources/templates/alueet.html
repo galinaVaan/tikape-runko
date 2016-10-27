@@ -2,32 +2,79 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
     <head>
-        <title>Otsikko</title>
+        <title>FORUUMI</title>
         <meta charset="utf-8" />
+        <style>
+            .tausta{
+                background: #466368;
+                background: linear-gradient(#648880, #293f50);
+                border-radius: 6px;
+                height: 750px;
+            }
+            .center {
+
+                width: 700px; /* Leveys */
+                padding: 10px; /* ympärillä*/
+                margin: auto; /* keskellä */
+                background: #f1f1f2;/*  tausta väri*/
+                border-radius: 100px; /* Радиус скругления */
+                border: 3px solid green; /* Параметры рамки */
+                box-shadow: 0 0 7px #666; /* Параметры тени */
+            }
+            .colortextGreen {
+                color:  #33CC66;
+            }
+            .colortextRed {
+                color:  #FF0066;
+            }
+            .colortextSyreeni {
+                color: #CC0066; /* Syreeni */
+            }
+            .round {
+                border-radius: 100px; /* Радиус скругления */
+                border: 3px solid green; /* Параметры рамки */
+                box-shadow: 0 0 7px #666; /* Параметры тени */
+            }
+
+
+        </style>
+
     </head>
 
-    <body>
-        <h1>Lista alueista!</h1>
-        
-        <table>
-            <tr>
-                <td>Alue</td>
-                <td>Viestejä</td>
-                <td>Uusin viesti</td>
-            </tr>
-            <tr th:each="list: ${alueet}">
-                <td><a th:href="${'/alueet/' + list.get(0).alueid}"><span th:text="${list.get(0).nimi}">jotain</span></a></td>
-                <td><span th:text="${list.get(1)}">luku</span></td>
-                <td><span th:text="${list.get(2)}">aika</span></td>
-            </tr>
-        </table>
-        
-	<p>
-		Lisää uusi alue:<br/>
-		<form action="/alueet/" method="POST">
-			<input type="text" name="nimi"/><br/>
-			<input type="submit" value="Uusi aihe"/><br/>
-		</form>
-	</p>
+
+    <body >
+        <div class="tausta">
+
+            <div class="center">
+
+                <h1> <center><span class="colortextSyreeni">   Tervetuloa keskustelemaan</span> </center></h1>
+                <h1> <center> <span class="colortextRed">       IHAN KAIKESTA!</span></center></h1>
+                <center>
+                    <table>
+
+                        <tr>
+
+                            <td><span class="colortextSyreeni">Alue    </span></td>
+                            <td><span class="colortextSyreeni">Viestejä        </span></td>
+                            <td><span class="colortextSyreeni">Uusin viesti</span></td>
+
+                        </tr>
+                        <tr th:each="list: ${alueet}">
+                            <td><a th:href="${'/alueet/' + list.get(0).alueid}"><span th:text="${list.get(0).nimi}">jotain</span></a></td>
+                            <td><span th:text="${list.get(1)}">luku</span></td>
+                            <td><span th:text="${list.get(2)}">aika</span></td>
+                        </tr>
+                    </table>
+
+                    <p><span class="colortextGreen">
+                            Lisää uusi alue:</span><br/>
+                        <form action="/alueet/" method="POST">
+                            <input type="text" name="nimi"/><br/>
+                            <input type="submit" value="Uusi alue"/><br/>
+                        </form>
+                    </p>
+                </center>
+            </div>
+        </div>
     </body>
 </html>
