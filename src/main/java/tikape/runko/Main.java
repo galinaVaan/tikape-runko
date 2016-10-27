@@ -56,8 +56,8 @@ public class Main {
         post("/alueet/", (req, res) -> {
             String nimi = req.queryParams("nimi").trim();
             alueDao.create(new Alue(1, nimi));
-
-            res.redirect("/alueet/");
+            int alueid = alueDao.findOneByNimi(nimi).getAlueid();
+            res.redirect("/alueet/" + alueid);
             return "";
         });
 
