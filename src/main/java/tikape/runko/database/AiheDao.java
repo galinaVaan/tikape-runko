@@ -175,9 +175,10 @@ public class AiheDao implements Dao<Aihe, Integer> {
             stmt.execute();
 
             stmt.close();
-        } else {
-            a = findOneByOtsikko(a.getOtsikko());
         }
+        
+        a = findOneByOtsikko(a.getOtsikko());
+
         stmt1.close();
         connection.close();
         return a;

@@ -91,9 +91,10 @@ public class AlueDao implements Dao<Alue, Integer> {
             stmt.execute();
 
             stmt.close();
-        } else {
-            a = findOneByNimi(a.getNimi());
         }
+        
+        a = findOneByNimi(a.getNimi());
+            
         stmt1.close();
         connection.close();
         return a;
