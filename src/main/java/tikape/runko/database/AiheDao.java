@@ -169,10 +169,9 @@ public class AiheDao implements Dao<Aihe, Integer> {
         stmt1.setObject(1, a.getOtsikko());
         ResultSet rs = stmt1.executeQuery();
         if (!rs.next()) {
-            PreparedStatement stmt = connection.prepareStatement("INSERT INTO Aihe (aiheid, otsikko, alueid) VALUES (?, ?, ?);");
-            stmt.setObject(1, a.getAiheid());
-            stmt.setObject(2, a.getOtsikko());
-            stmt.setObject(3, a.getAlueid());
+            PreparedStatement stmt = connection.prepareStatement("INSERT INTO Aihe (otsikko, alueid) VALUES (?, ?);");
+            stmt.setObject(1, a.getOtsikko());
+            stmt.setObject(2, a.getAlueid());
             stmt.execute();
 
             stmt.close();
